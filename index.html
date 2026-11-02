@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر iPhone</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f2f4f8;
+ color:#182033;
+}
+header{
+ background:#101827;
+ color:white;
+ text-align:center;
+ padding:28px 12px;
+}
+header h1{margin:0 0 10px;font-size:30px}
+header p{color:#cbd5e1}
+.cart{
+ background:#1769ff;
+ color:white;
+ border:0;
+ padding:12px 22px;
+ border-radius:10px;
+ font-size:16px;
+ cursor:pointer;
+}
+h2{text-align:center;margin:25px 0}
+.products{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+ gap:15px;
+ padding:15px;
+ max-width:1100px;
+ margin:auto;
+}
+.product{
+ background:white;
+ border-radius:15px;
+ padding:15px;
+ text-align:center;
+ box-shadow:0 3px 12px #0001;
+}
+.product img{
+ width:100%;
+ height:145px;
+ object-fit:contain;
+}
+.product h3{margin:10px 0}
+.price{
+ color:#1769ff;
+ font-size:19px;
+ font-weight:bold;
+}
+button.add{
+ background:#1769ff;
+ color:white;
+ border:0;
+ border-radius:8px;
+ padding:11px;
+ width:100%;
+ cursor:pointer;
+}
+#cart{
+ display:none;
+ background:white;
+ margin:20px 15px;
+ padding:20px;
+ border-radius:15px;
+}
+#cart.show{display:block}
+.cart-item{
+ display:flex;
+ justify-content:space-between;
+ padding:10px;
+ border-bottom:1px solid #ddd;
+ gap:10px;
+}
+.remove{
+ background:#dc3545;
+ color:white;
+ border:0;
+ padding:6px;
+ border-radius:5px;
+}
+.total{
+ font-size:22px;
+ font-weight:bold;
+ margin-top:20px;
+}
+.order{
+ background:#159b65;
+ color:white;
+ border:0;
+ padding:13px;
+ width:100%;
+ border-radius:10px;
+ margin-top:15px;
+ font-size:17px;
+}
+footer{
+ text-align:center;
+ padding:25px;
+ color:#777;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1> متجر iPhone</h1>
+<p>اكتشف أحدث هواتف Apple بأفضل الأسعار</p>
+<button class="cart" onclick="toggleCart()">
+🛒 سلة المشتريات (<span id="count">0</span>)
+</button>
+</header>
+
+<h2>هواتفنا</h2>
+<div class="products" id="products"></div>
+
+<div id="cart">
+<h2>سلة المشتريات</h2>
+<div id="items"></div>
+<div class="total">
+المجموع: <span id="total">0</span> DH
+</div>
+<button class="order" onclick="sendOrder()">
+تأكيد الطلب عبر WhatsApp
+</button>
+</div>
+
+<footer>
+© 2026 متجر iPhone - جميع الحقوق محفوظة
+</footer>
+
+<script>
+const phones=[
+["iPhone 11",2000,"iphone 11"],
+["iPhone 12",2100,"iphone 12"],
+["iPhone 13",2200,"iphone 13"],
+["iPhone 14",2300,"iphone 14"],
+["iPhone 15",2400,"iphone 15"],
+["iPhone 16",2500,"iphone 16"],
+["iPhone 17",2600,"iphone 17"]
+];
+
+let cart=[];
+
+const products=document.getElementById("products");
+
+phones.forEach((p,i)=>{
+ products.innerHTML+=`
+ <div class="product">
+ <img src="https://placehold.co/250x250/e8efff/243b68?text=${encodeURIComponent(p[0])}" alt="${p[0]}">
+ <h3>${p[0]}</h3>
+ <p class="price">${p[1]} DH</p>
+ <button class="add" onclick="add(${i})">
+ أضف إلى السلة
+ </button>
+ </div>`;
+});
+
+function add(i){
+ cart.push(i);
+ render();
+ document.getElementById("cart").classList.add("show");
+}
+
+function removeItem(i){
+ cart.splice(i,1);
+ render();
+}
+
+function render(){
+ document.getElementById("count").textContent=cart.length;
+ document.getElementById("items").innerHTML=
+ cart.map((id,i)=>`
+ <div class="cart-item">
+ <span>${phones[id][0]} - ${phones[id][1]} DH</span>
+ <button class="remove" onclick="removeItem(${i})">حذف</button>
+ </div>`).join("");
+
+ let total=cart.reduce((s,id)=>s+phones[id][1],0);
+ document.getElementById("total").textContent=total;
+}
+
+function toggleCart(){
+ document.getElementById("cart").classList.toggle("show");
+}
+
+function sendOrder(){
+ if(cart.length===0){
+ alert("السلة فارغة!");
+ return;
+ }
+ let message="طلب جديد من متجر iPhone:%0A";
+ cart.forEach(id=>{
+ message+=phones[id][0]+" - "+phones[id][1]+" DH%0A";
+ });
+ let total=cart.reduce((s,id)=>s+phones[id][1],0);
+ message+="المجموع: "+total+" DH";
+ alert("المتجر تجريبي. لإرسال الطلب الحقيقي أضف رقم WhatsApp الخاص بالمتجر إلى الكود.");
+}
+
+render();
+</script>
+</body>
+</html>
